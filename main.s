@@ -26,29 +26,35 @@ main
 	B loop
 
 question1
-	MOV r0, #0xABCD
-	MOVT r0, #0x6789 ; r0 is our input and is 0x6789ABCD
-	MOV r3, #0x0000
-	MOVT r3, #0x0000 ; r3 = 0x00000000
-	LSL r1, r0, #24 ; Isolate last byte to put it at the beginning of r1, r1 = 0xCD000000
-	LSR r2, r0, #24 ; Isolate first byte to put at end of r2, r2 = 0x00000067
-	ORR r1, r1, r2 ; r1 = 0xCD000067
+	; Converts between 32 bit little and big endian numbers without using REV
+	; R0 = only parameter, number to convert
+	; R0 = return value, number converted to little/big endian
+	MOV R0, #0xABCD
+	MOVT R0, #0x6789 ; r0 is our input and is 0x6789ABCD
+	MOV R3, #0x0000
+	MOVT R3, #0x0000 ; r3 = 0x00000000
+	LSL R1, R0, #24 ; Isolate last byte to put it at the beginning of r1, r1 = 0xCD000000
+	LSR R2, R0, #24 ; Isolate first byte to put at end of r2, r2 = 0x00000067
+	ORR R1, R1, R2 ; r1 = 0xCD000067
 	
-	MOV r2, #0x00FF
-	MOVT r2, #0xFFFF ; r2 = 0xFFFF00FF
-	BIC r3, r0, r2 ; r3 = 0x0000AB00
-	LSL r3, r3, #8 ; r3 = 0x00AB0000
-	ORR r1, r1, r3 ; r1 = 0xCDAB0067
+	MOV R2, #0x00FF
+	MOVT R2, #0xFFFF ; r2 = 0xFFFF00FF
+	BIC R3, R0, R2 ; r3 = 0x0000AB00
+	LSL R3, R3, #8 ; r3 = 0x00AB0000
+	ORR R1, R1, R3 ; r1 = 0xCDAB0067
 	
-	MOV r2, #0xFFFF
-	MOVT r2, #0xFF00 ; r2 = 0xFF00FFFF
-	BIC r3, r0, r2 ; r3 = 0x00890000
-	LSR r3, r3, #8 ; r3 = 0x00008900
-	ORR r1, r1, r3 ; r1 = 0xCDAB8967
-	MOV r0, r1 ; r0 = 0xCDAB8967
+	MOV R2, #0xFFFF
+	MOVT R2, #0xFF00 ; r2 = 0xFF00FFFF
+	BIC R3, R0, R2 ; r3 = 0x00890000
+	LSR R3, R3, #8 ; r3 = 0x00008900
+	ORR R1, R1, R3 ; r1 = 0xCDAB8967
+	MOV R0, R1 ; r0 = 0xCDAB8967
 	BX LR
 	
 question2
+	; Defines an array with 10 unsigned ints and calculates the mean (truncated to an int)
+	; Attempts to define the array in a data array but it doesn't work
+	; R0 contains the return value which is the mean of the array
 	;AREA Data
 Nums DCD 1,2,3,4,5,6,7,8,9,10
 	;AREA |.text|
@@ -65,9 +71,10 @@ sumLoop LDR R2, [R0, R1] ; Nums[i]
 	BX LR
 	
 question3
+	; Implements the function f(x) = -1 if x < 0, 0 if x = 0, 1 if x > 0
 	; R0 will contain our input x
+	; R0 will eventually contain the return value 
 	MOV R0, #-10 ; If we don't have R0 set before then we do it herre
-	CBZ R0, zero
 	CMP R0, #0 ; compare it with 0, which is equivalent to R0 - 0
 	BLT negative ; If the condition flag indicates we are less than 0, branch there
 	; if we reach this point we aren't 0 or less than 0 so set R0 to 1 and go back to main
@@ -82,7 +89,11 @@ negative
 	BX LR
 
 question4
-
+	; Finds the minimal value of 3 signed integers, a, b, and c stored in R0, R1, R2
+	MOV R0, #3 ; example value a = 3
+	MOV R1, #4 ; example value b = 4
+	MOV R2, #5 ; example value c = 5
+	CMP R0, R1
 question5
 	
 loop   B    loop
