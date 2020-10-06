@@ -11,8 +11,8 @@
 ;*******************************************************************
 
 
-	   AREA DATA, READONLY
-Nums DCD 1,2,3,4,5,6,7,8,9,10
+	   AREA DATA, READONLY ; Define a data secion
+Nums DCD 1,2,3,4,5,6,7,8,9,10 ; define an array with 10 integers
        AREA    |.text|, CODE, READONLY, ALIGN=2
        THUMB
        EXPORT  Start
@@ -135,10 +135,37 @@ question5
 	MOV R0, #2 ; x is 2
 	MOV R1, #3 ; y is 3, so x^y = 8
 	MOV R2, R0 ; copy x into R2 so we can multiply by it later
-	;CBZ R1, zero_exponent
+	CMP R0, #1 ; check if the base is 1
+	BEQ one_base ; if it is branch out
+	CMP R1, #0 ; check if the exponent is 0
+	BLT negative_exponent ; branch here if the exponent is negative
+	BEQ zero_exponent ; if it is 0 branch out here
+	CMP R1, #1 ; check if the exponent is 1
+	BEQ one_exponent ; if it is branch out
+	B exponentiation_loop ; Loop to multiply it out
+	BX LR ; redundant, we shouldn't get here but just in case go to main
+	
+one_base
+	BX LR ; Go back to main because R0 is 1 and 1 to anything is 1
 	
 zero_exponent
-	MOV R0, #1 ; Move 1 into R0 because the exponent is 0
+	MOV R0, #1 ; Move 1 into R0 because if the exponent is 0 then the result is 1
+	BX LR ; go back to main
+	
+one_exponent
+	BX LR ; go back to main because R0 will contain the correct x^1 value
+	
+negative_exponent
+	MOV R0, #0 ; anything to a negative exponent is between 0 and 1 so we truncate to 0
+	BX LR ; go back to main
+	
+exponentiation_loop
+	MUL R0, R2 ; Multiply the value in R0 by R2 (a copy of the base)
+	SUBS R1, R1, #1 ; subtract 1 from the exponent and set the flags
+	CMP R1, #1 ; check if the exponent is 1
+	BEQ one_exponent ; branch to the one exponent case
+	B exponentiation_loop ; loop again
+	BX LR ; redundant, we shouldn't get here but just in case go to main
 	
 loop   B    loop
 
