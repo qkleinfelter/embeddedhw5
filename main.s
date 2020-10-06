@@ -17,6 +17,14 @@
        EXPORT  Start
 Start
 
+main
+	BL question1
+	BL question2
+	BL question3
+	BL question4
+	BL question5
+	B loop
+
 question1
 	MOV r0, #0xABCD
 	MOVT r0, #0x6789 ; r0 is our input and is 0x6789ABCD
@@ -38,6 +46,7 @@ question1
 	LSR r3, r3, #8 ; r3 = 0x00008900
 	ORR r1, r1, r3 ; r1 = 0xCDAB8967
 	MOV r0, r1 ; r0 = 0xCDAB8967
+	BX LR
 	
 question2
 	;AREA Data
@@ -53,8 +62,24 @@ sumLoop LDR R2, [R0, R1] ; Nums[i]
 	BLO sumLoop
 	MOV R1, #10
 	UDIV R0, R3, R1
+	BX LR
 	
 question3
+	; R0 will contain our input x
+	MOV R0, #-10 ; If we don't have R0 set before then we do it herre
+	CBZ R0, zero
+	CMP R0, #0 ; compare it with 0, which is equivalent to R0 - 0
+	BLT negative ; If the condition flag indicates we are less than 0, branch there
+	; if we reach this point we aren't 0 or less than 0 so set R0 to 1 and go back to main
+	MOV R0, #1
+	BX LR
+	
+zero
+	BX LR ; if we branch into this section, then R0 = 0, and R0 is our result so we just go back to main
+	
+negative
+	MOV R0, #-1 ; set R0 to -1 and go back to main
+	BX LR
 
 question4
 
