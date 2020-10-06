@@ -11,7 +11,8 @@
 ;*******************************************************************
 
 
-
+	   AREA DATA, READONLY
+Nums DCD 1,2,3,4,5,6,7,8,9,10
        AREA    |.text|, CODE, READONLY, ALIGN=2
        THUMB
        EXPORT  Start
@@ -52,12 +53,10 @@ question1
 	BX LR
 	
 question2
-	; Defines an array with 10 unsigned ints and calculates the mean (truncated to an int)
+	; Reads from an array defined in the data area at the top of the file
+	; which contains 10 unsigned ints and calculates the mean
 	; Attempts to define the array in a data array but it doesn't work
 	; R0 contains the return value which is the mean of the array
-	;AREA Data
-Nums DCD 1,2,3,4,5,6,7,8,9,10
-	;AREA |.text|
 	LDR R0, =Nums
 	MOV R1, #0 ; ofs = 0
 	MOV R3, #0 ; sum = 0
@@ -131,6 +130,15 @@ b_not_min
 	BX LR ; go back to main
 	
 question5
+	; Calculates the value of x (stored in R0) to the power of y (stored in R1)
+	; The resulting exponentiated number will be in R0
+	MOV R0, #2 ; x is 2
+	MOV R1, #3 ; y is 3, so x^y = 8
+	MOV R2, R0 ; copy x into R2 so we can multiply by it later
+	;CBZ R1, zero_exponent
+	
+zero_exponent
+	MOV R0, #1 ; Move 1 into R0 because the exponent is 0
 	
 loop   B    loop
 
