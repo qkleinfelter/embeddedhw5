@@ -73,8 +73,9 @@ question3
 	; Implements the function f(x) = -1 if x < 0, 0 if x = 0, 1 if x > 0
 	; R0 will contain our input x
 	; R0 will eventually contain the return value 
-	MOV R0, #-10 ; If we don't have R0 set before then we do it herre
+	MOV R0, #10 ; If we don't have R0 set before then we do it herre
 	CMP R0, #0 ; compare it with 0, which is equivalent to R0 - 0
+	BEQ zero ; if the condition flag is equal to 0, branch there
 	BLT negative ; If the condition flag indicates we are less than 0, branch there
 	; if we reach this point we aren't 0 or less than 0 so set R0 to 1 and go back to main
 	MOV R0, #1
