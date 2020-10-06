@@ -90,10 +90,46 @@ negative
 
 question4
 	; Finds the minimal value of 3 signed integers, a, b, and c stored in R0, R1, R2
+	; Returns the minimum value in R0
 	MOV R0, #3 ; example value a = 3
 	MOV R1, #4 ; example value b = 4
 	MOV R2, #5 ; example value c = 5
-	CMP R0, R1
+	CMP R0, R1 ; a - b
+	BLT a_less_than_b ; Branch to a_less_than_b if a is less than b
+	BGT a_not_min ; otherwise, a isn't the minimum so we branch out
+	BX LR ; redundant, we shouldn't ever reach this but just in case get out
+	
+a_less_than_b
+	CMP R0, R2 ; a - c
+	BLT a_min ; Branch to a_min if a is less than c
+	BGT a_not_min ; otherwise, a isn't the minimum so we branch out
+	BX LR ; redundant, we shouldn't ever reach this but just in case get out
+	
+a_min
+	; R0 is already a so we don't need to do anything except branch back to main
+	BX LR
+	
+a_not_min
+	CMP R1, R0 ; b - a
+	BLT b_less_than_a ; Branch to b_less_than_a if b is less than a
+	BGT b_not_min ; otherwise, b isn't the minimum so we branch out
+	BX LR ; redundant, we shouldn't ever reach this but just in case get out
+	
+b_less_than_a
+	CMP R1, R2 ; b - c
+	BLT b_min ; Branch to b_min if b is less than c
+	BGT b_not_min ; otherwise, b isn't the minimum so we branch out
+	BX LR ; redundant, we shouldn't ever reach this but just in case get out
+	
+b_min
+	MOV R0, R1 ; Move R1 into R0 since its the minimum
+	BX LR ; go back to main
+	
+b_not_min
+	; We only get into this if a is also not the min, so c must be the min
+	MOV R0, R2 ; Move R2 into R0 since its the minimum
+	BX LR ; go back to main
+	
 question5
 	
 loop   B    loop
