@@ -39,6 +39,14 @@ question1
 	ORR r1, r1, r3 ; r1 = 0xCDAB8967
 	MOV r0, r1 ; r0 = 0xCDAB8967
 	
+question2
+	
+question3
+
+question4
+
+question5
+	
 loop   B    loop
 
 
