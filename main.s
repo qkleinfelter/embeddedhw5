@@ -40,6 +40,19 @@ question1
 	MOV r0, r1 ; r0 = 0xCDAB8967
 	
 question2
+	;AREA Data
+Nums DCD 1,2,3,4,5,6,7,8,9,10
+	;AREA |.text|
+	LDR R0, =Nums
+	MOV R1, #0 ; ofs = 0
+	MOV R3, #0 ; sum = 0
+sumLoop LDR R2, [R0, R1] ; Nums[i]
+	ADD R3, R3, R2 ; sum
+	ADD R1, R1, #4 ; ofs += 4
+	CMP R1, #40 ; ofs <= 40?
+	BLO sumLoop
+	MOV R1, #10
+	UDIV R0, R3, R1
 	
 question3
 
